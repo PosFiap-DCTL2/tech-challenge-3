@@ -11,6 +11,6 @@ variable "subnet_ids" {
 
 variable "instance_types" {
   description = "Variavel para troca de tipo de instanca"
-  type = string
-  default = "t3.medium"
+  type = list(string)
+  default = ["t3.medium"]
 }

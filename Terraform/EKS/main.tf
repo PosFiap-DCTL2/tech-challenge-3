@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "clusterpos" {
   compute_config {
     enabled = true
     node_pools = ["general-purpose"]
-    node_role_arn = arn:aws:iam::123945314948:role/LabRole
+    node_role_arn = "arn:aws:iam::123945314948:role/LabRole"
 
   }
 
@@ -43,7 +43,7 @@ resource "aws_eks_node_group" "nodegrouppos" {
 
   capacity_type   = "ON_DEMAND"
   instance_types  = var.instance_types
-  
+
   force_update_version = true
 
   scaling_config {
