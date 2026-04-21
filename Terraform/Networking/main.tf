@@ -37,12 +37,12 @@ resource "aws_subnet" "subnetprivada2" {
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
-  name       = "redis_subnet_group"
+  name       = "redissubnetgroup"
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds_subnet_group"
+  name       = "rdssubnetgroup"
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
 

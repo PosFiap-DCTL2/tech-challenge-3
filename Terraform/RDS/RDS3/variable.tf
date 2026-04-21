@@ -7,7 +7,7 @@ variable "db_password" {
 variable "db_username" {
   description = "Nome de usuário do banco de dados auth_db"
   type        = string
-  default     = "admin"
+  default     = "dbadmin"
 }
 
 variable "network" {
