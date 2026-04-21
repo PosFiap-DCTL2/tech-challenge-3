@@ -1,7 +1,7 @@
 ## VPC ###
 
 resource "aws_vpc" "vpcpos" {
-  cidr_block = "172.16.0.0/16"
+  cidr_block           = "172.16.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -9,31 +9,31 @@ resource "aws_vpc" "vpcpos" {
 
 ### Subnets ###
 resource "aws_subnet" "subnetpublica1" {
-    vpc_id = aws_vpc.vpcpos.id
-    cidr_block = "172.16.1.0/24"
-    map_public_ip_on_launch = true
-    availability_zone = var.availability_zones[0]
+  vpc_id                  = aws_vpc.vpcpos.id
+  cidr_block              = "172.16.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = var.availability_zones[0]
 }
 
 resource "aws_subnet" "subnetpublica2" {
-    vpc_id = aws_vpc.vpcpos.id
-    cidr_block = "172.16.2.0/24"
-    map_public_ip_on_launch = true
-    availability_zone = var.availability_zones[1]
+  vpc_id                  = aws_vpc.vpcpos.id
+  cidr_block              = "172.16.2.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = var.availability_zones[1]
 }
 
 resource "aws_subnet" "subnetprivada1" {
-    vpc_id = aws_vpc.vpcpos.id
-    cidr_block = "172.16.3.0/24"
-    map_public_ip_on_launch = false
-    availability_zone = var.availability_zones[0]
+  vpc_id                  = aws_vpc.vpcpos.id
+  cidr_block              = "172.16.3.0/24"
+  map_public_ip_on_launch = false
+  availability_zone       = var.availability_zones[0]
 }
 
 resource "aws_subnet" "subnetprivada2" {
-    vpc_id = aws_vpc.vpcpos.id
-    cidr_block = "172.16.4.0/24"
-    map_public_ip_on_launch = false
-    availability_zone = var.availability_zones[1]
+  vpc_id                  = aws_vpc.vpcpos.id
+  cidr_block              = "172.16.4.0/24"
+  map_public_ip_on_launch = false
+  availability_zone       = var.availability_zones[1]
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
@@ -111,11 +111,11 @@ resource "aws_security_group" "rds_1" {
   vpc_id      = aws.vpc.vpcpos.id
 
   ingress {
-    description              = "Postgres somente do EKS"
-    from_port                = 5432
-    to_port                  = 5432
-    protocol                 = "tcp"
-    security_groups          = [aws_security_group.eks.id]
+    description     = "Postgres somente do EKS"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.eks.id]
   }
 
   egress {
@@ -132,11 +132,11 @@ resource "aws_security_group" "redis" {
   vpc_id      = aws.vpc.vpcpos.id
 
   ingress {
-    description       = "Redis somente do EKS"
-    from_port         = 6379
-    to_port           = 6379
-    protocol          = "tcp"
-    security_groups   = [aws_security_group.eks.id]
+    description     = "Redis somente do EKS"
+    from_port       = 6379
+    to_port         = 6379
+    protocol        = "tcp"
+    security_groups = [aws_security_group.eks.id]
   }
 
   egress {
