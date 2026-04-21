@@ -37,11 +37,11 @@ resource "aws_subnet" "subnetprivada2" {
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
-  name       = "redis-subnet-group"
+  name       = "redis_subnet_group"
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
 
-resource "aws_db_subnet_group" "rds" {
+resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rds-subnet-group"
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
@@ -105,10 +105,10 @@ resource "aws_security_group" "eks" {
   }
 }
 
-resource "aws_security_group" "rds_1" {
+resource "aws_security_group" "rds" {
   name        = "rds-security-group"
   description = "Security Group do RDS"
-  vpc_id      = aws.vpc.vpcpos.id
+  vpc_id      = aws_vpc.vpcpos.id
 
   ingress {
     description     = "Postgres somente do EKS"
@@ -129,7 +129,7 @@ resource "aws_security_group" "rds_1" {
 resource "aws_security_group" "redis" {
   name        = "redis-security-group"
   description = "Redis acessível apenas pelo EKS"
-  vpc_id      = aws.vpc.vpcpos.id
+  vpc_id      = aws_vpc.vpcpos.id
 
   ingress {
     description     = "Redis somente do EKS"

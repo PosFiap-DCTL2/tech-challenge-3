@@ -6,6 +6,7 @@ resource "aws_elasticache_cluster" "evaluation-service" {
   parameter_group_name = "default.redis7"
   engine_version       = "7.1"
   port                 = 6379
-  subnet_group_name    = aws_elasticache_subnet_group.redis_subnet_group.name
-  security_group_ids   = [aws_security_group.redis-security-group.id]
+
+  subnet_group_name  = var.network.subnet_group_id
+  security_group_ids = [var.network.security_group_id]
 }

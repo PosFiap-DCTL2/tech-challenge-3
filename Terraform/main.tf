@@ -40,24 +40,28 @@ module "EKS_cluster" {
   source = "./EKS"
 }
 
-module "Networking_VPC" {
+module "Networking" {
   source = "./Networking"
 }
 
 module "RDS_auth_db" {
   source = "./RDS/RDS1"
+  network = module.Networking.rds_config
 }
 
 module "RDS_flags_db" {
   source = "./RDS/RDS2"
+  network = module.Networking.rds_config
 }
 
 module "RDS_targeting_db" {
   source = "./RDS/RDS3"
+  network = module.Networking.rds_config
 }
 
 module "Redis_DB" {
-  source = "./Redis"
+  source  = "./Redis"
+  network = module.Networking.redis_config
 }
 
 module "SQS" {
