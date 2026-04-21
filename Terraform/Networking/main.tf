@@ -85,7 +85,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_security_group" "eks" {
   name        = "sg-eks"
   description = "Security Group do EKS"
-  vpc_id      = aws.vpc.vpcpos.id
+  vpc_id      = aws_vpc.vpcpos.id
 
   egress {
     description = "EKS pode sair para qualquer destino"
