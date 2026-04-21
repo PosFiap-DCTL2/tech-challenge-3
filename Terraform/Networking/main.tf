@@ -42,7 +42,7 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds-subnet-group"
+  name       = "rds_subnet_group"
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
 
@@ -128,7 +128,7 @@ resource "aws_security_group" "rds" {
 
 resource "aws_security_group" "redis" {
   name        = "redis-security-group"
-  description = "Redis acessível apenas pelo EKS"
+  description = "Redis acessivel apenas pelo EKS"
   vpc_id      = aws_vpc.vpcpos.id
 
   ingress {

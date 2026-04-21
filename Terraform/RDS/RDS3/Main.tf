@@ -1,13 +1,11 @@
 resource "aws_db_instance" "targeting_db" {
-  allocated_storage    = 20
-  db_name              = "targeting_db"
-  engine               = "postgres"
-  engine_version       = "13.7"
-  instance_class       = "db.t3.micro"
-  username             = var.db_username
-  password             = var.db_password
-  parameter_group_name = "default.postgres13"
-  skip_final_snapshot  = true
+  allocated_storage   = 20
+  db_name             = "targeting_db"
+  engine              = "postgres"
+  instance_class      = "db.t3.micro"
+  username            = var.db_username
+  password            = var.db_password
+  skip_final_snapshot = true
 
   publicly_accessible    = false
   db_subnet_group_name   = var.network.subnet_group_id

@@ -37,7 +37,8 @@ module "ECR_targeting_service" {
 }
 
 module "EKS_cluster" {
-  source = "./EKS"
+  source     = "./EKS"
+  subnet_eks = module.Networking.eks_config.subnet_ids
 }
 
 module "Networking" {
