@@ -11,7 +11,7 @@ resource "aws_db_instance" "targeting_db" {
 
   publicly_accessible    = false
   db_subnet_group_name   = aws_db_subnet_group.rds.name
-  vpc_security_group_ids = [aws_security_group.sg-rds.id]
+  vpc_security_group_ids = [aws_security_group.rds-security-group.id]
 }
 
 # Resta adicionar os dados da tabela sql #

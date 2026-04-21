@@ -36,6 +36,15 @@ resource "aws_subnet" "subnetprivada2" {
     availability_zone = var.availability_zones[1]
 }
 
+resource "aws_elasticache_subnet_group" "redis_subnet_group" {
+  name       = "redis-subnet-group"
+  subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
+}
+
+resource "aws_db_subnet_group" "rds" {
+  name       = "rds-subnet-group"
+  subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
+}
 
 ### Tabela de Roteamento Pública ###
 
@@ -83,7 +92,7 @@ resource "aws_internet_gateway" "gw" {
 ### Security Group ###
 
 resource "aws_security_group" "eks" {
-  name        = "sg-eks"
+  name        = "eks-security-group"
   description = "Security Group do EKS"
   vpc_id      = aws_vpc.vpcpos.id
 
@@ -97,7 +106,7 @@ resource "aws_security_group" "eks" {
 }
 
 resource "aws_security_group" "rds_1" {
-  name        = "sg-rds"
+  name        = "rds-security-group"
   description = "Security Group do RDS"
   vpc_id      = aws.vpc.vpcpos.id
 
@@ -118,7 +127,7 @@ resource "aws_security_group" "rds_1" {
 }
 
 resource "aws_security_group" "redis" {
-  name        = "sg-redis"
+  name        = "redis-security-group"
   description = "Redis acessível apenas pelo EKS"
   vpc_id      = aws.vpc.vpcpos.id
 
