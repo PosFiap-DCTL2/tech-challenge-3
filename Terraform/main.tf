@@ -45,17 +45,17 @@ module "Networking" {
 }
 
 module "RDS_auth_db" {
-  source = "./RDS/RDS1"
+  source  = "./RDS/RDS1"
   network = module.Networking.rds_config
 }
 
 module "RDS_flags_db" {
-  source = "./RDS/RDS2"
+  source  = "./RDS/RDS2"
   network = module.Networking.rds_config
 }
 
 module "RDS_targeting_db" {
-  source = "./RDS/RDS3"
+  source  = "./RDS/RDS3"
   network = module.Networking.rds_config
 }
 
