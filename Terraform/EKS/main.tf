@@ -56,6 +56,13 @@ resource "aws_eks_node_group" "nodegrouppos" {
     max_unavailable = 1
   }
 
+  remote_access {
+    ec2_ssh_key = "my-key"
+    source_security_group_ids = [
+      aws_security_group.eks.id
+    ]
+  }
+
 depends_on = [
   aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
   aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,

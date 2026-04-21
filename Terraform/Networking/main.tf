@@ -79,3 +79,61 @@ resource "aws_route_table_association" "tabeladerotaprivada2" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpcpos.id
 }
+
+### Security Group ###
+
+resource "aws_security_group" "eks" {
+  name        = "sg-eks"
+  description = "Security Group do EKS"
+  vpc_id      = aws.vpc.vpcpos.id
+
+  egress {
+    description = "EKS pode sair para qualquer destino"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "rds_1" {
+  name        = "sg-rds"
+  description = "Security Group do RDS"
+  vpc_id      = aws.vpc.vpcpos.id
+
+  ingress {
+    description              = "Postgres somente do EKS"
+    from_port                = 5432
+    to_port                  = 5432
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.eks.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "redis" {
+  name        = "sg-redis"
+  description = "Redis acessível apenas pelo EKS"
+  vpc_id      = aws.vpc.vpcpos.id
+
+  ingress {
+    description       = "Redis somente do EKS"
+    from_port         = 6379
+    to_port           = 6379
+    protocol          = "tcp"
+    security_groups   = [aws_security_group.eks.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
