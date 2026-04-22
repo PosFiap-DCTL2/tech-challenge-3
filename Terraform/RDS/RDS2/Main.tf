@@ -1,5 +1,5 @@
 resource "aws_db_instance" "flags_db" {
-  identifier          = "flags_db"
+  identifier          = "flagsdb"
   allocated_storage   = 20
   db_name             = "flags_db"
   engine              = "postgres"

@@ -1,5 +1,5 @@
 resource "aws_db_instance" "targeting_db" {
-  identifier          = "targeting_db"
+  identifier          = "targetingdb"
   allocated_storage   = 20
   db_name             = "targeting_db"
   engine              = "postgres"

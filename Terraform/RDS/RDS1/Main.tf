@@ -1,5 +1,5 @@
 resource "aws_db_instance" "auth_db" {
-  identifier          = "auth-db"
+  identifier          = "authdb"
   allocated_storage   = 20
   db_name             = "auth_db"
   engine              = "postgres"
