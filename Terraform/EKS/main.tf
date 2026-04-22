@@ -10,7 +10,7 @@ resource "aws_eks_cluster" "clusterpos" {
   }
 
   vpc_config {
-    subnet_ids                = var.subnets
+    subnet_ids         = var.subnets
     security_group_ids = [var.grupodeseguranca]
   }
 }
