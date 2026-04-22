@@ -20,6 +20,6 @@ variable "subnets" {
 variable "grupodeseguranca" {
   description = "Configurações do grupo de segurança para o EKS"
   type = object({
-    security_group_id   = string
+    security_group_id = string
   })
 }
