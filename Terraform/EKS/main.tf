@@ -22,7 +22,7 @@ resource "aws_eks_node_group" "nodegrouppos" {
   cluster_name    = aws_eks_cluster.clusterpos.name
   node_group_name = "nodegrouppos"
   node_role_arn   = var.lab_role_arn
-  subnet_ids      = var.subnet_eks
+  subnet_ids      = var.subnet.subnet_group_id
 
   instance_types = var.instance_types
 
