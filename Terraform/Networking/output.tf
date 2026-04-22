@@ -25,10 +25,20 @@ output "rds_config" {
   }
 }
 
-output "eks_config" {
-  description = "Configurações necessárias para o EKS"
-  value = {
-    subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id, aws_subnet.subnetpublica1.id, aws_subnet.subnetpublica2.id]
-  }
+output "eks_subnet_ids" {
+  description = "Subnets do EKS"
+  value = [
+    aws_subnet.subnetprivada1.id,
+    aws_subnet.subnetprivada2.id,
+    aws_subnet.subnetpublica1.id,
+    aws_subnet.subnetpublica2.id
+  ]
 }
+
+output "eks_security_group_id" {
+  description = "ID do grupo de segurança para o EKS"
+  value = aws_security_group.eks.id
+}
+}
+
 

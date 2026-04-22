@@ -10,7 +10,16 @@ variable "lab_role_arn" {
   default     = "arn:aws:iam::123945314948:role/LabRole"
 }
 
-variable "subnet_eks" {
-  description = "Subnets do EKS"
-  type        = list(string)
+variable "subnets" {
+  description = "Configurações da subnet para o EKS"
+  type = object({
+    subnet_group_id   = string
+  })
+}
+
+variable "grupodeseguranca" {
+  description = "Configurações do grupo de segurança para o EKS"
+  type = object({
+    security_group_id   = string
+  })
 }
