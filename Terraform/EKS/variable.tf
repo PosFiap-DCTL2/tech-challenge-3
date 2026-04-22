@@ -13,13 +13,13 @@ variable "lab_role_arn" {
 variable "subnets" {
   description = "Configurações da subnet para o EKS"
   type = object({
-    subnet_group_id   = string
+    subnet_group_id = string
   })
 }
 
 variable "grupodeseguranca" {
   description = "Configurações do grupo de segurança para o EKS"
   type = object({
-    security_group_id   = string
+    security_group_id = string
   })
 }

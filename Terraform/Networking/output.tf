@@ -37,7 +37,7 @@ output "eks_subnet_ids" {
 
 output "eks_security_group_id" {
   description = "ID do grupo de segurança para o EKS"
-  value = aws_security_group.eks.id
+  value       = aws_security_group.eks.id
 }
 
 
