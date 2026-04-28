@@ -15,6 +15,10 @@ resource "aws_eks_cluster" "clusterpos" {
   }
 }
 
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.clusterpos.name
+}
+
 
 ### Node Group EKS ###
 
@@ -36,4 +40,20 @@ resource "aws_eks_node_group" "nodegrouppos" {
     aws_eks_cluster.clusterpos
   ]
 
+}
+
+resource "helm_release" "argocd" {
+  name             = "argocd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  version          = "4.5.2"
+  namespace        = "argocd"
+  create_namespace = true
+
+  set = [
+    {
+      name  = "server.service.type"
+      value = "LoadBalancer"
+    }
+  ]
 }
