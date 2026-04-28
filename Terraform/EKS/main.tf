@@ -31,7 +31,7 @@ resource "aws_eks_node_group" "nodegrouppos" {
   instance_types = var.instance_types
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     max_size     = 4
     min_size     = 1
   }
@@ -56,4 +56,6 @@ resource "helm_release" "argocd" {
       value = "LoadBalancer"
     }
   ]
+
+  depends_on = [ aws_eks_node_group.nodegrouppos ]
 }
