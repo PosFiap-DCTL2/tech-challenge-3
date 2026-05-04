@@ -38,3 +38,13 @@ jobs:
         working-directory: ./Terraform
         run: terraform apply -auto-approve
 
+      - name: Configurando kubectl
+        run: |
+          aws eks update-kubeconfig --name clusterpos --region us-east-1
+
+      - name: Instalado ArgoCD
+        run: |
+          kubectl create namespace argocd
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+          kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+
