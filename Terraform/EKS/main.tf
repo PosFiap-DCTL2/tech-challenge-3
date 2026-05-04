@@ -34,12 +34,4 @@ resource "aws_eks_node_group" "nodegrouppos" {
   depends_on = [
     aws_eks_cluster.clusterpos
   ]
-
-}
-
-resource "aws_eks_access_entry" "nodegroup" {
-  cluster_name  = aws_eks_cluster.clusterpos.name
-  principal_arn = aws_eks_node_group.nodegrouppos.node_role_arn
-
-  type = "EC2_LINUX"
 }
