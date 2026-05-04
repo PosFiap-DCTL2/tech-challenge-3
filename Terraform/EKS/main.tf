@@ -3,7 +3,7 @@
 resource "aws_eks_cluster" "clusterpos" {
   name     = "clusterpos"
   role_arn = var.lab_role_arn
-  version  = "1.35"
+  version  = "1.32"
 
   access_config {
     authentication_mode = "API"
