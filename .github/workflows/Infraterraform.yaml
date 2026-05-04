@@ -41,25 +41,6 @@ jobs:
       - name: Configurar acesso kubectl no EKS
         run: |
           aws eks update-kubeconfig --name clusterpos --region us-east-1
+          
 
-          aws eks create-access-entry \
-            --cluster-name clusterpos \
-            --principal-arn arn:aws:iam::123945314948:role/LabRole \
-            --region us-east-1 || true
-
-          aws eks associate-access-policy \
-            --cluster-name clusterpos \
-            --principal-arn arn:aws:iam::123945314948:role/LabRole \
-            --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
-            --access-scope type=cluster \
-            --region us-east-1 || true
-
-      - name: Instalar ArgoCD
-        run: |
-          kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-          kubectl apply -n argocd \
-            --server-side \
-            --force-conflicts \
-            -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-          kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
