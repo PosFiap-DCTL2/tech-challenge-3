@@ -1,9 +1,11 @@
 data "aws_eks_cluster" "this" {
-  name = aws_eks_cluster.clusterpos.name
+  name       = aws_eks_cluster.clusterpos.name
+  depends_on = [aws_eks_cluster.clusterpos]  # ← garante que o cluster existe antes
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = aws_eks_cluster.clusterpos.name
+  name       = aws_eks_cluster.clusterpos.name
+  depends_on = [aws_eks_cluster.clusterpos]  # ← idem
 }
 
 provider "kubernetes" {
