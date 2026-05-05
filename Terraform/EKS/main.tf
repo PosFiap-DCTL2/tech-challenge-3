@@ -13,6 +13,8 @@ resource "aws_eks_cluster" "clusterpos" {
   vpc_config {
     subnet_ids         = var.subnets
     security_group_ids = [var.grupodeseguranca]
+    endpoint_private_access = true   
+    endpoint_public_access  = true 
   }
 }
 
