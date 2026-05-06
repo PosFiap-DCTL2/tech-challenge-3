@@ -1,7 +1,19 @@
 name: Terraform deploy
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'Terraform/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'Terraform/**'
+
 
 jobs:
   terraform:
@@ -11,53 +23,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Adicionandos as credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1
-
       - name: Initialize Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        working-directory: ./Terraform
         run: terraform init
 
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
       - name: Terraform Validate
-        working-directory: ./Terraform
         run: terraform validate
 
       - name: Terraform Plan
-        working-directory: ./Terraform
+        if: github.event_name == 'pull_request'
         run: terraform plan
 
       - name: Terraform Apply
-        working-directory: ./Terraform
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
-      - name: Configurar acesso kubectl no EKS
-        run: |
-          aws eks update-kubeconfig --name clusterpos --region us-east-1
-      
-      - name: instalar ArgoCD (server-side)
-        run: |
-          kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-          
-          kubectl apply \
-            --server-side \
-            --force-conflicts \
-            -n argocd \
-            -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-          
-          # Aguardar o deployment ficar pronto
-          kubectl wait --for=condition=available \
-          deployment/argocd-server \
-          -n argocd \
-          --timeout=120s
-
-          # Expor como LoadBalancer
-          kubectl patch svc argocd-server -n argocd \
-          -p '{"spec": {"type": "LoadBalancer"}}'
