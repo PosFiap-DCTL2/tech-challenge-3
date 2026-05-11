@@ -127,15 +127,18 @@ jobs:
       if: always()
       run: docker logout ${{ steps.login-ecr.outputs.registry }}
 
-    - name: Update GitOps Repo 
+    - name: Update GitOps Repo
       run: |
         git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
-        cd Kubernetes/analytics-service
+        cd tech-challenge-3/Kubernetes/analytics-service
 
-        
-          
+        COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
+        REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+        sed -i "s|^\(\s*image:\s*\).*analytics-service:.*|\1$REGISTRY/analytics-service:$COMMIT_HASH|" deployment.yaml
+
         git config user.name "GitHub Actions Bot"
         git config user.email "actions@github.com"
-        git add .
-        git commit -m "feat(flag-service): atualiza imagem para $IMAGE_TAG"
+        git add deployment.yaml
+        git commit -m "feat(analytics-service): Update da imagem para $COMMIT_HASH"
         git push
