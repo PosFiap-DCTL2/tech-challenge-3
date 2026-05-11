@@ -127,13 +127,12 @@ jobs:
       if: always()
       run: docker logout ${{ steps.login-ecr.outputs.registry }}
 
-    - name: Update GitOps Repo # necessario atualizar e arrumar
+    - name: Update GitOps Repo 
       run: |
-        git clone https://$GITOPS_TOKEN@github.com/$GITOPS_REPO.git
-        cd tech-challenge-3
-          
-        # Troca a versão da imagem no arquivo de Deployment do Flag Service
-        sed -i "s|image: .*|image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG|g" manifestos/flag-service/deployment.yaml
+        git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
+        cd Kubernetes/analytics-service
+
+        
           
         git config user.name "GitHub Actions Bot"
         git config user.email "actions@github.com"
