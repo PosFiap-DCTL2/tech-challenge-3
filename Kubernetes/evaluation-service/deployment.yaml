@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evaluation-deploy
+  namespace: evaluation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evaluation-service # < - deploy ira gerenciar container com essa label Linhas 20
+  template:
+    metadata:
+      labels:
+        app: evaluation-service # < - tag do container
+    spec:
+      containers:
+      - name: evaluation-service
+        image: 832200544765.dkr.ecr.us-east-1.amazonaws.com/evaluation-service:latest
+        ports:
+        - containerPort: 8004 # <- apenas indica na documentação
+        envFrom:
+        - secretRef:
+            name: evaluation-secret
+        - configMapRef:
+            name: evaluation-configmap
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 10
+          periodSeconds: 30

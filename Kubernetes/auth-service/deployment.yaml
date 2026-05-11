@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deploy
+  namespace: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service # < - deploy ira gerenciar container com essa label Linhas 20
+  template:
+    metadata:
+      labels:
+        app: auth-service # < - tag do container
+    spec:
+      containers:
+      - name: auth-service
+        image: 832200544765.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+        ports:
+        - containerPort: 8001 # <- apenas indica na documentação
+        envFrom:
+        - secretRef:
+            name: auth-secret
+        - configMapRef:
+            name: auth-configmap
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 30

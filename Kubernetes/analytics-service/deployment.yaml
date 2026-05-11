@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-deploy
+  namespace: analytics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-service # < - deploy ira gerenciar container com essa label Linhas 20
+  template:
+    metadata:
+      labels:
+        app: analytics-service # < - tag do container
+    spec:
+      containers:
+      - name: analytics-service
+        image: 832200544765.dkr.ecr.us-east-1.amazonaws.com/analytics-service:latest
+        ports:
+        - containerPort: 8005 # <- apenas indica na documentação
+        envFrom:
+        - secretRef:
+            name: analytics-secret
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 10
+          periodSeconds: 30
