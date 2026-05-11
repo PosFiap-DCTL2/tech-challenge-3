@@ -1,7 +1,10 @@
 name: CI analytics-service
 
 on:
- workflow_dispatch:
+  change:
+    branches: [ main ]
+    paths: 
+      - 'analytics-service/app.py'
 
 jobs:
   build-test:
