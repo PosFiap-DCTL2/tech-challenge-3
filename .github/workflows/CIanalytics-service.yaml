@@ -99,7 +99,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-         -Dsonar.projectKey=danilorferraz
+         -Dsonar.projectKey=CITech03
          -Dsonar.organization=danilorferraz
 
   Build-Push-Docker-Image:
