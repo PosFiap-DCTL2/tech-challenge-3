@@ -5,13 +5,15 @@ on:
     branches: [ main ]
     paths: 
       - 'analytics-service/app.py'
-    workspaces:
-      - analytics-service
 
 jobs:
   build-test:
     name: Build & Unit Test
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./analytics-service
 
     steps:
       - name: Checkout code
@@ -30,6 +32,11 @@ jobs:
   lint:
     name: Linting
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./analytics-service
+
     needs: build-test
     steps:
     - name: Checkout code
@@ -54,6 +61,11 @@ jobs:
     name: Scan-de-Seguranca (SCA)
     runs-on: ubuntu-latest
     needs: lint
+
+    defaults:
+      run:
+        working-directory: ./analytics-service
+
     steps:
     - name: Checkout code.
       uses: actions/checkout@v4
@@ -72,6 +84,11 @@ jobs:
     name: Scan-de-Seguranca (SAST)
     runs-on: ubuntu-latest
     needs: lint
+
+    defaults:
+      run:
+        working-directory: ./analytics-service
+
     steps:
     - name: Checkout code.
       uses: actions/checkout@v4
@@ -89,6 +106,11 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
     needs: [Scan-de-Seguranca-SCA, Scan-de-Seguranca-SAST]
+
+    defaults:
+      run:
+        working-directory: ./analytics-service
+        
     steps:
     - name: Checkout code.
       uses: actions/checkout@v4
