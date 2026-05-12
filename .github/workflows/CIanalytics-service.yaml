@@ -66,10 +66,6 @@ jobs:
       run:
         working-directory: ./analytics-service
 
-    defaults:
-      run:
-        working-directory: ./analytics-service
-
     steps:
     - name: Checkout code.
       uses: actions/checkout@v4
