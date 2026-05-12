@@ -74,7 +74,7 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: fs
-        scan-ref: '.'
+        scan-ref: 'analytics-service'
         vuln-type: library
         severity: CRITICAL
         ignore-unfixed: true
@@ -107,10 +107,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Scan-de-Seguranca-SCA, Scan-de-Seguranca-SAST]
 
-    defaults:
-      run:
-        working-directory: ./analytics-service
-
     steps:
     - name: Checkout code.
       uses: actions/checkout@v4
@@ -136,7 +132,7 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: fs
-        scan-ref: '.'
+        scan-ref: 'analytics-service'
         vuln-type: library
         severity: CRITICAL
         ignore-unfixed: true
