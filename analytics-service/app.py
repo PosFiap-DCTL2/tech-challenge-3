@@ -27,7 +27,7 @@ if not all([AWS_REGION, SQS_QUEUE_URL, DYNAMODB_TABLE_NAME]):
     sys.exit(1)
 
 ## --- Clientes Boto3 ---
-# Criamos a sessão uma vez
+# Criamos a sessão uma vez # MUDANDO A IMAGEM
 try:
     session = boto3.Session(region_name=AWS_REGION)
     sqs_client = session.client("sqs")
