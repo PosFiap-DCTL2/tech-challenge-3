@@ -6,9 +6,9 @@ metadata:
   labels:
     app: evaluation-service
 data:
-  REDIS_URL: ${{ secrets.REDIS_Url }}
-  FLAG_SERVICE_URL: ${{ secrets.FLAG_URL }}
-  TARGETING_SERVICE_URL: ${{ secrets.TARGETING_URL }}
-  SERVICE_API_KEY: ${{ secrets.API_KEY }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_SQS_URL: ${{ secrets.AWS_SQS_URL }}
+  REDIS_URL: #
+  FLAG_SERVICE_URL: #
+  TARGETING_SERVICE_URL: #
+  SERVICE_API_KEY: #
+  AWS_REGION: #
+  AWS_SQS_URL: #

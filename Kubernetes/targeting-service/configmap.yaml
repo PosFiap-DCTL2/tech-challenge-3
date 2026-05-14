@@ -6,5 +6,5 @@ metadata:
   labels:
     app: targeting-service
 data:
-  DATABASE_URL: ${{ secrets.TARGETING_DB_URL }}
-  AUTH_SERVICE_URL: ${{ secrets.AUTH_URL }}
+  DATABASE_URL: #
+  AUTH_SERVICE_URL: #
