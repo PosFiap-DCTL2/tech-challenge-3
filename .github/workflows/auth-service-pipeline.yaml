@@ -37,6 +37,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
+          cache: true
+          cache-dependency-path: auth-service/go.sum
 
       - name: Download dependencies
         run: go mod download
@@ -64,6 +66,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
+          cache: true
+          cache-dependency-path: auth-service/go.sum
 
       - name: Check formatting with gofmt
         run: |
@@ -108,6 +112,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
+          cache: true
+          cache-dependency-path: auth-service/go.sum
 
       - name: Install gosec
         run: go install github.com/securego/gosec/v2/cmd/gosec@latest
