@@ -14,7 +14,7 @@ jobs:
   build: 
     runs-on: ubuntu-latest
 
-    default:
+    defaults:
       run:
         working-directory: ./targeting-service
 
@@ -40,7 +40,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    default:
+    defaults:
       run:
         working-directory: ./targeting-service
 
@@ -69,7 +69,7 @@ jobs:
     needs: [build, lint, check-security]
     runs-on: ubuntu-latest
 
-    default:
+    defaults:
       run:
         working-directory: ./targeting-service
 
