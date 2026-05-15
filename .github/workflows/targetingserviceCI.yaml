@@ -1,6 +1,6 @@
 # Main CI/CD pipeline workflow for Tech Challenge 3
 
-name: Pipeline-CI-CD-Tech3
+name: Pipeline-CI-targeting-service
 
 on:
   # push:
