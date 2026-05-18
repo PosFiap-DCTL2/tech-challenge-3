@@ -1,13 +1,12 @@
 # Main CI/CD pipeline workflow for Tech Challenge 3
 
-name: Pipeline-CI-targeting-service
+name: targeting-service CI
 
 on:
   push:
     branches: [ "main" ]
     path:
-      - 'targeting-service\app.py'
-
+      - 'targeting-service/app.py'
 
 jobs:
 
@@ -90,8 +89,8 @@ jobs:
       - name: Docker build
         run: |
           echo "Deploying application..."
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/targeting-service:latest
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/targeting-service:${{ env.SHORT_SHA }}
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/targeting-service:latest .
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/targeting-service:${{ env.SHORT_SHA }} .
 
       - name: Docker push
         run: |

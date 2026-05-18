@@ -1,6 +1,6 @@
 # Workflow for security checks
 
-name: Security-Checks
+name: targeting-service security-checks
 on:
   workflow_dispatch:
   workflow_call:
@@ -8,6 +8,9 @@ on:
 jobs:
   security-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./targeting-service
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -20,6 +23,9 @@ jobs:
 
   SAST:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./targeting-service
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -35,6 +41,9 @@ jobs:
 
   Trivy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./targeting-service
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
