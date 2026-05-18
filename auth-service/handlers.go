@@ -47,6 +47,7 @@ func (a *App) validateKeyHandler(w http.ResponseWriter, r *http.Request) {
 	err := a.DB.QueryRow("SELECT id FROM api_keys WHERE key_hash = $1 AND is_active = true", keyHash).Scan(&id)
 	if err != nil {
 		// Se não encontrar (sql.ErrNoRows), ou qualquer outro erro, a chave é inválida
+		// #nosec G706 -- log não expõe a chave completa, apenas prefixo do hash
 		log.Printf("Falha na validação da chave (hash: %s...): %v", keyHash[:6], err)
 		http.Error(w, "Chave de API inválida ou inativa", http.StatusUnauthorized)
 		return

@@ -68,6 +68,7 @@ func main() {
 		IdleTimeout:  15 * time.Second,
 	}
 
+	// #nosec G706 -- port vem de variável de ambiente controlada pelo deploy
 	log.Printf("Serviço de Autenticação (Go) rodando na porta %s", port)
 
 	if err := server.ListenAndServe(); err != nil {
