@@ -17,7 +17,7 @@ on:
 jobs:
 
   build: 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
@@ -43,7 +43,7 @@ jobs:
           # To do: add real tests here
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
@@ -72,7 +72,7 @@ jobs:
 
   publish-image:
     needs: [build, lint, check-security]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
