@@ -7,13 +7,18 @@ on:
     branches: [ "main" ]
 
 env:
+  SERVICE_NAME: flag-service
+  SERVICE_PATH: flag-service
   AWS_REGION: us-east-1
-  # PEGAR CAMINHO DO REPOSITORIO ECR DO FLAG SERVICES COM O DANILO
-  ECR_REPOSITORY: nome-do-ecr-do-flag-service
 
 jobs:
   build-and-lint:
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./flag-service
+    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
