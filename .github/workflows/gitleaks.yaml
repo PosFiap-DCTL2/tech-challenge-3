@@ -1,6 +1,8 @@
 name: gitleaks scan
 on:
   workflow_dispatch:
+  # schedule:
+  #   - cron: '10 4 * 5 *' # At 04:10 UTC everyday in May
 
 jobs:
   gitleaks:
