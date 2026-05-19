@@ -1,7 +1,7 @@
-## ==========================================
+# ==========================================
 # Stage 1: Builder
 # ==========================================
-FROM golang:1.22-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 # Definir diretório de trabalho
 WORKDIR /app
