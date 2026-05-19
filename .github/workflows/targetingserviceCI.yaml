@@ -5,12 +5,14 @@ name: targeting-service CI
 on:
   push:
     branches: [ "main" ]
-    path:
-      - 'targeting-service/app.py'
+    paths:
+      - 'targeting-service/**'
+      - '.github/workflows/targetingserviceCI.yaml'
   workflow_dispatch:
     branches: [ "main" ]
     paths:
-      - 'targeting-service/app.py'
+      - 'targeting-service/**'
+      - '.github/workflows/targetingserviceCI.yaml'
 
 jobs:
 
