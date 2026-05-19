@@ -7,13 +7,11 @@ on:
     branches: [main]
     paths:
       - 'flag-service/**'
-      - '.github/workflows/flagserviceCI.yaml'
 
   pull_request:
     branches: [main]
     paths:
-      - 'auth-service/**'
-      - '.github/workflows/flagserviceCI.yaml'
+      - 'flag-service/**'
 env:
   SERVICE_NAME: flag-service
   SERVICE_PATH: flag-service
