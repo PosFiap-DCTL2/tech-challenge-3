@@ -70,8 +70,7 @@ jobs:
           cache-dependency-path: auth-service/go.sum
 
       - name: Check formatting with gofmt
-        run: |
-          test -z "$(gofmt -l .)"
+        run: test -z "$(gofmt -l .)"
 
       - name: Run go vet
         run: go vet ./...
@@ -128,10 +127,6 @@ jobs:
       - scan-seguranca-sca
       - scan-seguranca-sast
 
-    defaults:
-      run:
-        working-directory: ./auth-service
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -153,7 +148,9 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/auth-service:${{ env.IMAGE_TAG }} .
+          docker build \
+            -t ${{ steps.login-ecr.outputs.registry }}/auth-service:${{ env.IMAGE_TAG }} \
+            ./auth-service
 
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@master
@@ -170,3 +167,19 @@ jobs:
       - name: Logout of Amazon ECR
         if: always()
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
+
+      - name: Update GitOps Repo
+        run: |
+          git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
+          cd tech-challenge-3/Kubernetes/auth-service
+
+          COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+          sed -i "s|^\(\s*image:\s*\).*auth-service:.*|\1$REGISTRY/auth-service:$COMMIT_HASH|" deployment.yaml
+
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add deployment.yaml
+          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH"
+          git push
