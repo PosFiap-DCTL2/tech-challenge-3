@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: targeting-service
-        image: 123945314948.dkr.ecr.us-east-1.amazonaws.com/targeting-service:14f8646
+        image: 123945314948.dkr.ecr.us-east-1.amazonaws.com/targeting-service:ac49afc
         ports:
         - containerPort: 8003 # <- apenas indica na documentação
         envFrom:
