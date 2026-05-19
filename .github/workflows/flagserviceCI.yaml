@@ -1,11 +1,19 @@
 name: Flag Service - CI/CD Pipeline
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
+  push:
+    branches: [main]
+    paths:
+      - 'flag-service/**'
+      - '.github/workflows/flagserviceCI.yaml'
+
+  pull_request:
+    branches: [main]
+    paths:
+      - 'auth-service/**'
+      - '.github/workflows/flagserviceCI.yaml'
 env:
   SERVICE_NAME: flag-service
   SERVICE_PATH: flag-service
