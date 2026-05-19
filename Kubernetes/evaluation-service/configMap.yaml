@@ -6,9 +6,9 @@ metadata:
   labels:
     app: evaluation-service
 data:
-  REDIS_URL: #
-  FLAG_SERVICE_URL: #
-  TARGETING_SERVICE_URL: #
+  REDIS_URL: "redis://clustercfg.evaluation-service-cache.nu6bxp.use1.cache.amazonaws.com:6379"
+  FLAG_SERVICE_URL: "http://flag-service-clusterip.flag-service.svc.cluster.local:8002"
+  TARGETING_SERVICE_URL: "http://targeting-service-clusterip.targeting-service.svc.cluster.local:8003"
   SERVICE_API_KEY: #
-  AWS_REGION: dXMtZWFzdC0x
-  AWS_SQS_URL: #
+  AWS_REGION: "us-east-1"
+  AWS_SQS_URL: "https://sqs.us-east-1.amazonaws.com/123945314948/minhafila"
