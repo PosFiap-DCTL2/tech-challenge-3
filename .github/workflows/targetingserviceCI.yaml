@@ -108,3 +108,19 @@ jobs:
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/targeting-service:latest
           docker push ${{ steps.login-ecr.outputs.registry }}/targeting-service:${{ env.SHORT_SHA }}
+
+      - name: Update GitOps Repo
+        run: |
+          git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
+          cd tech-challenge-3/Kubernetes/targeting-service
+
+          COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+          sed -i "s|^\(\s*image:\s*\).*targeting-service:.*|\1$REGISTRY/targeting-service:$COMMIT_HASH|" deployment.yaml
+
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add deployment.yaml
+          git commit -m "feat(targeting-service): Update da imagem para $COMMIT_HASH"
+          git push
