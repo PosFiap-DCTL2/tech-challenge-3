@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -19,7 +20,7 @@ var ctx = context.Background()
 
 // App struct para injeção de dependência
 type App struct {
-	RedisClient         *redis.Client
+	RedisClient         redis.Cmdable
 	SqsSvc              *sqs.SQS
 	SqsQueueURL         string
 	HttpClient          *http.Client
@@ -68,7 +69,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("Não foi possível parsear a URL do Redis: %v", err)
 	}
-	rdb := redis.NewClient(opt)
+
+	var rdb redis.Cmdable
+	if strings.Contains(redisURL, "clustercfg") {
+		// Cluster Mode do ElastiCache
+		rdb = redis.NewClusterClient(&redis.ClusterOptions{
+			Addrs:     []string{opt.Addr},
+			Username:  opt.Username,
+			Password:  opt.Password,
+			TLSConfig: opt.TLSConfig,
+		})
+	} else {
+		// Standalone Mode (ou local)
+		rdb = redis.NewClient(opt)
+	}
+
 	if _, err := rdb.Ping(ctx).Result(); err != nil {
 		log.Fatalf("Não foi possível conectar ao Redis: %v", err)
 	}
