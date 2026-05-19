@@ -1,7 +1,7 @@
 variable "db_password" {
   description = "Senha do banco de dados auth_db"
   type        = string
-  default     = "2%IVLq4im$8C"
+  default     = "2AIVLq4imD8C"
 }
 
 variable "db_username" {
