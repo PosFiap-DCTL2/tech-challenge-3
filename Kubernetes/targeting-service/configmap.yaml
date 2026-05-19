@@ -6,5 +6,5 @@ metadata:
   labels:
     app: targeting-service
 data:
-  DATABASE_URL: "postgres://dbadmin:u1sg<E7>BW09@targetingdb.cvwomoowc2qc.us-east-1.rds.amazonaws.com:5432/postgres"
+  DATABASE_URL: "postgres://dbadmin:u1sg<E7>BW09@targetingdb.cvwomoowc2qc.us-east-1.rds.amazonaws.com:5432/targetingdb"
   AUTH_SERVICE_URL: "http://auth-service-clusterip.auth-service.svc.cluster.local:8001"
