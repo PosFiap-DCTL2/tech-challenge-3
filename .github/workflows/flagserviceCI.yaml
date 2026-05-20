@@ -19,7 +19,7 @@ env:
 
 jobs:
   build-and-lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     defaults:
       run:
@@ -47,7 +47,7 @@ jobs:
 
   security-scan:
     needs: build-and-lint
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       
@@ -67,7 +67,7 @@ jobs:
 
   docker-and-gitops:
     needs: security-scan
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # Só faz deploy se for um push direto na branch main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
@@ -113,7 +113,7 @@ jobs:
       - name: Update GitOps Repo
         run: |
           git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
-          cd tech-challenge-3/Kubernetes/auth-service
+          cd tech-challenge-3/Kubernetes/flag-service
 
           COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
           REGISTRY=${{ steps.login-ecr.outputs.registry }}

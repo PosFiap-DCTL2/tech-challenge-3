@@ -23,7 +23,7 @@ env:
 jobs:
   build-test:
     name: Build & Unit Test
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
@@ -51,7 +51,7 @@ jobs:
 
   lint:
     name: Linting
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build-test
 
     defaults:
@@ -77,7 +77,7 @@ jobs:
 
   scan-seguranca-sca:
     name: Scan de Segurança - SCA
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: lint
 
     steps:
@@ -96,7 +96,7 @@ jobs:
 
   scan-seguranca-sast:
     name: Scan de Segurança - SAST
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: lint
 
     defaults:
@@ -122,7 +122,7 @@ jobs:
 
   build-push-docker-image:
     name: Build & Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - scan-seguranca-sca
       - scan-seguranca-sast
