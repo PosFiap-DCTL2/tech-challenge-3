@@ -55,8 +55,8 @@ jobs:
       # Scan de Segurança no Código (SAST)
       - name: SAST Scan (Bandit)
         run: |
-          pip install bandit --break-system-packages
-          python -m bandit -r . -ll -ii
+          python3 -m pip install bandit --break-system-packages
+          python3 -m bandit -r . -ll -ii
           
       # Scan de Segurança nas Bibliotecas (SCA) - Quebra se achar CRÍTICO
       - name: SCA Scan (Trivy FS)
