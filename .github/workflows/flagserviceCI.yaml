@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'flag-service/**'
+      - '.github/workflows/targetingserviceCI.yaml'
 
   pull_request:
     branches: [main]
@@ -60,7 +61,7 @@ jobs:
       - name: SAST Scan (Bandit)
         run: |
           pip install bandit --break-system-packages
-          bandit -r . -ll -ii
+          /home/douglas/.local/bin/bandit -r . -ll -ii
           
       # Scan de Segurança nas Bibliotecas (SCA) - Quebra se achar CRÍTICO
       - name: SCA Scan (Trivy FS)
