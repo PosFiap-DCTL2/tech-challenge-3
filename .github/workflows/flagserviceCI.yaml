@@ -61,7 +61,11 @@ jobs:
       - name: SAST Scan (Bandit)
         run: |
           pip install bandit --break-system-packages
+<<<<<<< HEAD
           /home/douglas/.local/bin/bandit -r . -ll -ii
+=======
+          python -m bandit -r . -ll -ii
+>>>>>>> 5e0f24f (ajuste bandit)
           
       # Scan de Segurança nas Bibliotecas (SCA) - Quebra se achar CRÍTICO
       - name: SCA Scan (Trivy FS)
@@ -81,7 +85,7 @@ jobs:
     defaults:
       run:
         working-directory: ./flag-service
-        
+
     steps:
       - uses: actions/checkout@v4
 
