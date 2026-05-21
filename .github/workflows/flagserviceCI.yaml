@@ -129,10 +129,10 @@ jobs:
           COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
           REGISTRY=${{ steps.login-ecr.outputs.registry }}
 
-          sed -i "s|^\(\s*image:\s*\).*auth-service:.*|\1$REGISTRY/flag-service:$COMMIT_HASH|" deployment.yaml
+          sed -i "s|^\(\s*image:\s*\).*flag-service:.*|\1$REGISTRY/flag-service:$COMMIT_HASH|" deployment.yaml
 
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
-          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH"
+          git commit -m "feat(flag-service): Update da imagem para $COMMIT_HASH"
           git push
