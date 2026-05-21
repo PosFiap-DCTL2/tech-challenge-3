@@ -1,7 +1,7 @@
-resource "aws_db_instance" "targeting_db" {
+resource "aws_db_instance" "targetingdb" {
   identifier          = "targetingdb"
   allocated_storage   = 20
-  db_name             = "targeting_db"
+  db_name             = "targetingdb"
   engine              = "postgres"
   instance_class      = "db.t3.micro"
   username            = var.db_username

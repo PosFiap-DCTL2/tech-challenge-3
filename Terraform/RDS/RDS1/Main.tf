@@ -1,7 +1,7 @@
-resource "aws_db_instance" "auth_db" {
+resource "aws_db_instance" "authdb" {
   identifier          = "authdb"
   allocated_storage   = 20
-  db_name             = "auth_db"
+  db_name             = "authdb"
   engine              = "postgres"
   instance_class      = "db.t3.micro"
   username            = var.db_username

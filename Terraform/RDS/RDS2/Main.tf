@@ -1,7 +1,7 @@
-resource "aws_db_instance" "flags_db" {
+resource "aws_db_instance" "flagsdb" {
   identifier          = "flagsdb"
   allocated_storage   = 20
-  db_name             = "flags_db"
+  db_name             = "flagsdb"
   engine              = "postgres"
   instance_class      = "db.t3.micro"
   username            = var.db_username
