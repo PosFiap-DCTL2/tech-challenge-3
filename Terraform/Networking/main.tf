@@ -43,7 +43,7 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rdssubnetgroup"
-  subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
+  subnet_ids = [aws_subnet.subnetpublica1.id, aws_subnet.subnetpublica2.id]
 }
 
 ### NAT Gateway ###
