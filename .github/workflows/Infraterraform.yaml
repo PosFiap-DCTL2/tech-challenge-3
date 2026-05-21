@@ -60,7 +60,7 @@ jobs:
   
   Criando o authdb:
     runs-on: self-hosted
-    depends-on: terraform
+    needs: terraform
     defaults:
       run:
         working-directory: ./Terraform/Initsql/authdb
@@ -104,7 +104,7 @@ jobs:
 
   Criando o flagsdb:
     runs-on: self-hosted
-    depends-on: terraform
+    needs: terraform
     defaults:
       run:
         working-directory: ./Terraform/Initsql/flagsdb
@@ -148,7 +148,7 @@ jobs:
 
   Criando o targetingdb:
     runs-on: self-hosted
-    depends-on: terraform
+    needs: terraform
     defaults:
       run:
         working-directory: ./Terraform/Initsql/targetingdb
