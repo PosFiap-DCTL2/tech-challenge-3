@@ -46,6 +46,17 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
   subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
 }
 
+### NAT Gateway ###
+
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.subnetpublica1.id
+}
+
 ### Tabela de Roteamento Pública ###
 
 resource "aws_route_table" "publica" {
@@ -71,6 +82,11 @@ resource "aws_route_table_association" "tabeladerotapublica2" {
 
 resource "aws_route_table" "privada" {
   vpc_id = aws_vpc.vpcpos.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
 
 resource "aws_route_table_association" "tabeladerotaprivada1" {
