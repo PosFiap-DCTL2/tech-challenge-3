@@ -8,9 +8,7 @@ resource "aws_db_instance" "authdb" {
   password            = var.db_password
   skip_final_snapshot = true
 
-  publicly_accessible    = false
+  publicly_accessible    = true
   db_subnet_group_name   = var.network.subnet_group_id
   vpc_security_group_ids = [var.network.security_group_id]
 }
-
-# Resta adicionar os dados da tabela sql #
