@@ -10,9 +10,8 @@ output "vpc_id" {
 }
 
 output "redis_config" {
-  description = "Configurações necessárias para o Redis"
   value = {
-    subnet_group_id   = aws_elasticache_subnet_group.redis_subnet_group.id
+    subnet_group_id   = aws_elasticache_subnet_group.redis_subnet_group.name
     security_group_id = aws_security_group.redis.id
   }
 }
