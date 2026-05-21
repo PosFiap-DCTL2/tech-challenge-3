@@ -58,7 +58,7 @@ jobs:
 
           kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
   
-  Criando o authdb:
+  Criando-o-authdb:
     runs-on: self-hosted
     needs: terraform
     defaults:
@@ -102,7 +102,7 @@ jobs:
             -d authdb \
             -f init.sql
 
-  Criando o flagsdb:
+  Criando-o-flagsdb:
     runs-on: self-hosted
     needs: terraform
     defaults:
@@ -146,7 +146,7 @@ jobs:
             -d flagsdb \
             -f init.sql
 
-  Criando o targetingdb:
+  Criando-o-targetingdb:
     runs-on: self-hosted
     needs: terraform
     defaults:
