@@ -3,7 +3,7 @@
 # ==========================================
 FROM golang:1.26-alpine AS builder
 
-# Definir diretório de trabalho
+## Definir diretório de trabalho
 WORKDIR /app
 
 # Copiar todos os arquivos do projeto
