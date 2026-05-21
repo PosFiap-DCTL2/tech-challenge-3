@@ -54,7 +54,7 @@ jobs:
       # Scan de Segurança no Código (SAST)
       - name: SAST Scan (Bandit)
         run: |
-          pip install bandit
+          pip install bandit --break-system-packages
           bandit -r . -ll -ii
           
       # Scan de Segurança nas Bibliotecas (SCA) - Quebra se achar CRÍTICO
