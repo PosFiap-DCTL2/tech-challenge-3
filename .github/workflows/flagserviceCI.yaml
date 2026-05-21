@@ -2,29 +2,27 @@ name: Flag Service - CI/CD Pipeline
 
 on:
   workflow_dispatch:
-
   push:
     branches: [main]
     paths:
       - 'flag-service/**'
-
   pull_request:
     branches: [main]
     paths:
       - 'flag-service/**'
+
 env:
   SERVICE_NAME: flag-service
   SERVICE_PATH: flag-service
   AWS_REGION: us-east-1
+  ECR_REPOSITORY: flag-service # Adicionado para evitar erro no Docker Build
 
 jobs:
   build-and-lint:
     runs-on: self-hosted
-    
     defaults:
       run:
         working-directory: ./flag-service
-    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -36,11 +34,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest -r requirements.txt
-      
+          
       # Análise de formatação do código (Linter)
       - name: Run Flake8
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      
+        
       # Testes Unitários
       - name: Run Tests
         run: pytest || echo "Sem testes configurados, seguindo."
@@ -48,11 +46,9 @@ jobs:
   security-scan:
     needs: build-and-lint
     runs-on: self-hosted
-
     defaults:
       run:
         working-directory: ./flag-service
-
     steps:
       - uses: actions/checkout@v4
       
@@ -74,13 +70,10 @@ jobs:
     needs: security-scan
     runs-on: self-hosted
     # Só faz deploy se for um push direto na branch main
-
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     defaults:
       run:
         working-directory: ./flag-service
-
     steps:
       - uses: actions/checkout@v4
 
@@ -103,7 +96,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           
       # Faz o Scan na imagem Docker gerada (Container Scan)
       - name: Container Scan (Trivy)
@@ -119,18 +112,16 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        run: docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
 
+      # Atualiza o repositório GitOps
       - name: Update GitOps Repo
         run: |
           git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
           cd tech-challenge-3/Kubernetes/flag-service
-
           COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
           REGISTRY=${{ steps.login-ecr.outputs.registry }}
-
-          sed -i "s|^\(\s*image:\s*\).*flag-service:.*|\1$REGISTRY/flag-service:$COMMIT_HASH|" deployment.yaml
-
+          sed -i "s|^\(\s*image:\s*\).*flag-service:.*|\1$REGISTRY/${{ env.ECR_REPOSITORY }}:$COMMIT_HASH|" deployment.yaml
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
