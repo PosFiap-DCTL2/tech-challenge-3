@@ -132,7 +132,7 @@ resource "aws_security_group" "rds" {
     to_port         = 5432
     protocol        = "tcp"
     
-    security_groups = [data.aws_eks_cluster.example.vpc_config[0].cluster_security_group_id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -154,7 +154,7 @@ resource "aws_security_group" "redis" {
     to_port         = 6379
     protocol        = "tcp"
     
-    security_groups = [data.aws_eks_cluster.example.vpc_config[0].cluster_security_group_id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
