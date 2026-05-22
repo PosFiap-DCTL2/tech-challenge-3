@@ -1,5 +1,6 @@
 name: CI auth-service
 # add comment
+
 on:
   workflow_dispatch:
 
@@ -33,7 +34,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check if Go exists
+        shell: powershell
+        run: |
+          if (Get-Command go -ErrorAction SilentlyContinue) {
+            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+            go version
+          } else {
+            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
+          }
+
       - name: Setup Go
+        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -62,7 +74,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check if Go exists
+        shell: powershell
+        run: |
+          if (Get-Command go -ErrorAction SilentlyContinue) {
+            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+            go version
+          } else {
+            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
+          }
+
       - name: Setup Go
+        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -107,7 +130,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check if Go exists
+        shell: powershell
+        run: |
+          if (Get-Command go -ErrorAction SilentlyContinue) {
+            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+            go version
+          } else {
+            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
+          }
+
       - name: Setup Go
+        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -181,5 +215,5 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
-          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH"
+          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH" || echo "Nenhuma alteração para commit"
           git push
