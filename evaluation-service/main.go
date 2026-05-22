@@ -15,7 +15,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Contexto global para o Redis
+/// Contexto global para o Redis
 var ctx = context.Background()
 
 // App struct para injeção de dependência
