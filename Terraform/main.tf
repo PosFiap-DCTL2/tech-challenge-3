@@ -16,25 +16,25 @@ module "analytics_service" {
   source = "./DynamoDB"
 }
 
-#module "ECR_analytics_service" {
-#  source = "./ECR/analytics-service"
-#}
+module "ECR_analytics_service" {
+  source = "./ECR/analytics-service"
+}
 
-#module "ECR_auth_service" {
-#  source = "./ECR/auth-service"
-#}
+module "ECR_auth_service" {
+  source = "./ECR/auth-service"
+}
 
-#module "ECR_evaluation_service" {
-#  source = "./ECR/evaluation-service"
-#}
+module "ECR_evaluation_service" {
+  source = "./ECR/evaluation-service"
+}
 
-#module "ECR_flag_service" {
-#  source = "./ECR/flag-service"
-#}
+module "ECR_flag_service" {
+  source = "./ECR/flag-service"
+}
 
-#module "ECR_targeting_service" {
-#  source = "./ECR/targeting-service"
-#}
+module "ECR_targeting_service" {
+  source = "./ECR/targeting-service"
+}
 
 module "EKS_cluster" {
   source           = "./EKS"
