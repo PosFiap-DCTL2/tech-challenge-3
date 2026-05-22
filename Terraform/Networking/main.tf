@@ -43,7 +43,18 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rdssubnetgroup"
-  subnet_ids = [aws_subnet.subnetprivada1.id, aws_subnet.subnetprivada2.id]
+  subnet_ids = [aws_subnet.subnetpublica1.id, aws_subnet.subnetpublica2.id]
+}
+
+### NAT Gateway ###
+
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.subnetpublica1.id
 }
 
 ### Tabela de Roteamento Pública ###
@@ -71,6 +82,11 @@ resource "aws_route_table_association" "tabeladerotapublica2" {
 
 resource "aws_route_table" "privada" {
   vpc_id = aws_vpc.vpcpos.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
 
 resource "aws_route_table_association" "tabeladerotaprivada1" {
@@ -115,7 +131,8 @@ resource "aws_security_group" "rds" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.eks.id]
+    
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -136,7 +153,8 @@ resource "aws_security_group" "redis" {
     from_port       = 6379
     to_port         = 6379
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    
+    security_groups = [aws_security_group.eks.id]
   }
 
   egress {

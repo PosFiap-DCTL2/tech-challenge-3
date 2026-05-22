@@ -1,127 +1,121 @@
-name: Flag Service - CI/CD Pipeline
-# add comment
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'flag-service/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'flag-service/**'
+name: flag-service CI
 
-env:
-  SERVICE_NAME: flag-service
-  SERVICE_PATH: flag-service
-  AWS_REGION: us-east-1
-  ECR_REPOSITORY: flag-service # Adicionado para evitar erro no Docker Build
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'flag-service/**'
+      - '.github/workflows/flagserviceCI.yaml' # AGORA ELE VAI RODAR QUANDO VOCÊ EDITAR O YAML!
+  workflow_dispatch:
 
 jobs:
-  build-and-lint:
+
+  build: 
     runs-on: self-hosted
+
     defaults:
       run:
         working-directory: ./flag-service
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          
+          python-version: '3.12'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest -r requirements.txt
-          
-      # Análise de formatação do código (Linter)
-      - name: Run Flake8
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        
-      # Testes Unitários
-      - name: Run Tests
-        run: pytest || echo "Sem testes configurados, seguindo."
+          pip install pytest
+          pip install -r requirements.txt
 
-  security-scan:
-    needs: build-and-lint
-    runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./flag-service
-    steps:
-      - uses: actions/checkout@v4
-      
-      # Scan de Segurança no Código (SAST)
-      - name: SAST Scan (Bandit)
+      - name: Run tests
         run: |
-          python3 -m pip install bandit --break-system-packages
-          python3 -m bandit -r . -ll -ii
-          
-      # Scan de Segurança nas Bibliotecas (SCA) - Quebra se achar CRÍTICO
-      - name: SCA Scan (Trivy FS)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          severity: 'CRITICAL'
-          exit-code: '1' 
+          pytest || echo "Sem testes configurados, seguindo."
 
-  docker-and-gitops:
-    needs: security-scan
+  lint:
     runs-on: self-hosted
-    # Só faz deploy se for um push direto na branch main
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     defaults:
       run:
         working-directory: ./flag-service
-    steps:
-      - uses: actions/checkout@v4
 
-      # Configura as credenciais da AWS 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install flake8
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      
+      - name: Run flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+  # A MÁGICA: Chamando a esteira de segurança oficial da equipe!
+  check-security:
+    uses: ./.github/workflows/security.yaml
+
+  publish-image:
+    needs: [build, lint, check-security]
+    runs-on: self-hosted
+
+    defaults:
+      run:
+        working-directory: ./flag-service
+
+    # Só faz deploy se for um push direto na branch main
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set short SHA
+        run: |
+          echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # Necessário se for conta Academy
-          aws-region: ${{ env.AWS_REGION }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
-      # Constrói a imagem Docker
-      - name: Build Docker Image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+      
+      - name: Docker build
         run: |
-          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
-          
-      # Faz o Scan na imagem Docker gerada (Container Scan)
-      - name: Container Scan (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}'
-          format: 'table'
-          severity: 'CRITICAL'
-          exit-code: '1' 
+          echo "Deploying application..."
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/flag-service:latest .
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/flag-service:${{ env.SHORT_SHA }} .
 
-      # Envia a Imagem pro ECR na AWS
-      - name: Push to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+      - name: Docker push
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/flag-service:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/flag-service:${{ env.SHORT_SHA }}
 
-      # Atualiza o repositório GitOps
       - name: Update GitOps Repo
         run: |
           git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
           cd tech-challenge-3/Kubernetes/flag-service
+
           COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
           REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          sed -i "s|^\(\s*image:\s*\).*flag-service:.*|\1$REGISTRY/${{ env.ECR_REPOSITORY }}:$COMMIT_HASH|" deployment.yaml
+
+          sed -i "s|^\(\s*image:\s*\).*flag-service:.*|\1$REGISTRY/flag-service:$COMMIT_HASH|" deployment.yaml
+
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
