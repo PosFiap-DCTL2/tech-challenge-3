@@ -57,135 +57,123 @@ jobs:
             -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
           kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+      
+      - name: Criar secrets dos bancos no K8s
+        run: |
+          kubectl create secret generic db-credentials \
+            --from-literal=auth_db_password=${{ secrets.auth_db_password }} \
+            --from-literal=flags_db_password=${{ secrets.flags_db_password }} \
+            --from-literal=targeting_db_password=${{ secrets.targeting_db_password }} \
+            --from-literal=db_user=${{ secrets.db_user }} \
+            --dry-run=client -o yaml | kubectl apply -f -
   
-  Criando-o-authdb:
+  Inserindo os dados no banco:
     runs-on: self-hosted
     needs: terraform
-    defaults:
-      run:
-        working-directory: ./Terraform/Initsql/authdb
     steps:
 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Adicionandos as credenciais AWS
+      - name: Adicionando as credenciais AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1   
+          aws-region: us-east-1
 
-      - name: Coletar o host do RDS
-        id: get-db-host
+      - name: Configurar kubectl
+        run: aws eks update-kubeconfig --name clusterpos --region us-east-1
+
+      - name: Coletar hosts dos RDS
         run: |
-          DB_HOST=$(aws rds describe-db-instances \
+          AUTH_HOST=$(aws rds describe-db-instances \
             --db-instance-identifier authdb \
-            --query 'DBInstances[0].Endpoint.Address' \
-            --output text)
-          echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
+            --query 'DBInstances[0].Endpoint.Address' --output text)
 
-      - name: Instalando o psql
-        run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client -y
-
-      - name: Run init SQL
-        env:
-          PGPASSWORD: ${{ secrets.auth_db_password }}
-        run: |
-          psql \
-            -h $DB_HOST \
-            -p 5432 \
-            -U ${{ secrets.db_user }} \
-            -d authdb \
-            -f init.sql
-
-  Criando-o-flagsdb:
-    runs-on: self-hosted
-    needs: terraform
-    defaults:
-      run:
-        working-directory: ./Terraform/Initsql/flagsdb
-    steps:
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Adicionandos as credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1   
-
-      - name: Coletar o host do RDS
-        id: get-db-host
-        run: |
-          DB_HOST=$(aws rds describe-db-instances \
+          FLAGS_HOST=$(aws rds describe-db-instances \
             --db-instance-identifier flagsdb \
-            --query 'DBInstances[0].Endpoint.Address' \
-            --output text)
-          echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
+            --query 'DBInstances[0].Endpoint.Address' --output text)
 
-      - name: Instalando o psql
-        run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client -y
-
-      - name: Run init SQL
-        env:
-          PGPASSWORD: ${{ secrets.flags_db_password }}
-        run: |
-          psql \
-            -h $DB_HOST \
-            -p 5432 \
-            -U ${{ secrets.db_user }} \
-            -d flagsdb \
-            -f init.sql
-
-  Criando-o-targetingdb:
-    runs-on: self-hosted
-    needs: terraform
-    defaults:
-      run:
-        working-directory: ./Terraform/Initsql/targetingdb
-    steps:
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Adicionandos as credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1   
-
-      - name: Coletar o host do RDS
-        id: get-db-host
-        run: |
-          DB_HOST=$(aws rds describe-db-instances \
+          TARGETING_HOST=$(aws rds describe-db-instances \
             --db-instance-identifier targetingdb \
-            --query 'DBInstances[0].Endpoint.Address' \
-            --output text)
-          echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
+            --query 'DBInstances[0].Endpoint.Address' --output text)
 
-      - name: Instalando o psql
-        run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client -y
+          echo "AUTH_HOST=$AUTH_HOST" >> $GITHUB_ENV
+          echo "FLAGS_HOST=$FLAGS_HOST" >> $GITHUB_ENV
+          echo "TARGETING_HOST=$TARGETING_HOST" >> $GITHUB_ENV
 
-      - name: Run init SQL
-        env:
-          PGPASSWORD: ${{ secrets.targeting_db_password }}
+      - name: Criar ConfigMap com os SQLs
         run: |
-          psql \
-            -h $DB_HOST \
-            -p 5432 \
-            -U ${{ secrets.db_user }} \
-            -d targetingdb \
-            -f init.sql
+          kubectl create configmap init-sql-scripts \
+            --from-file=authdb.sql=./Terraform/Initsql/authdb/init.sql \
+            --from-file=flagsdb.sql=./Terraform/Initsql/flagsdb/init.sql \
+            --from-file=targetingdb.sql=./Terraform/Initsql/targetingdb/init.sql \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Aplicar o Job de init
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: db-init-job
+            namespace: default
+          spec:
+            ttlSecondsAfterFinished: 120   # auto-deleta após 2 min
+            template:
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: db-init
+                    image: postgres:15-alpine
+                    command: ["/bin/sh", "-c"]
+                    args:
+                      - |
+                        echo ">>> authdb" && \
+                        PGPASSWORD=\$AUTH_PASS psql -h \$AUTH_HOST -p 5432 -U \$DB_USER -d authdb -f /scripts/authdb.sql && \
+                        echo ">>> flagsdb" && \
+                        PGPASSWORD=\$FLAGS_PASS psql -h \$FLAGS_HOST -p 5432 -U \$DB_USER -d flagsdb -f /scripts/flagsdb.sql && \
+                        echo ">>> targetingdb" && \
+                        PGPASSWORD=\$TARGETING_PASS psql -h \$TARGETING_HOST -p 5432 -U \$DB_USER -d targetingdb -f /scripts/targetingdb.sql
+                    env:
+                      - name: AUTH_HOST
+                        value: "$AUTH_HOST"
+                      - name: FLAGS_HOST
+                        value: "$FLAGS_HOST"
+                      - name: TARGETING_HOST
+                        value: "$TARGETING_HOST"
+                      - name: DB_USER
+                        valueFrom:
+                          secretKeyRef:
+                            name: db-credentials
+                            key: db_user
+                      - name: AUTH_PASS
+                        valueFrom:
+                          secretKeyRef:
+                            name: db-credentials
+                            key: auth_db_password
+                      - name: FLAGS_PASS
+                        valueFrom:
+                          secretKeyRef:
+                            name: db-credentials
+                            key: flags_db_password
+                      - name: TARGETING_PASS
+                        valueFrom:
+                          secretKeyRef:
+                            name: db-credentials
+                            key: targeting_db_password
+                    volumeMounts:
+                      - name: sql-scripts
+                        mountPath: /scripts
+                volumes:
+                  - name: sql-scripts
+                    configMap:
+                      name: init-sql-scripts
+          EOF
+
+      - name: Aguardar conclusão do Job
+        run: |
+          kubectl wait --for=condition=complete job/db-init-job \
+            --timeout=300s
