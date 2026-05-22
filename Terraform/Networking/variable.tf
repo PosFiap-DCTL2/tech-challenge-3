@@ -6,3 +6,8 @@ variable "availability_zones" {
     "us-east-1b"
   ]
 }
+
+variable "eks_security_group_id" {
+  description = "Security Group criado automaticamente pelo EKS"
+  type        = string
+}

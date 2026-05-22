@@ -44,6 +44,7 @@ module "EKS_cluster" {
 
 module "Networking" {
   source = "./Networking"
+  eks_security_group_id = module.EKS_cluster.cluster_security_group_id
 }
 
 module "RDS_auth_db" {
