@@ -5,6 +5,11 @@ on:
     branches: [ "main" ]
     paths:
       - 'evaluation-service/**'
+  workflow_dispatch:
+    branches: [ "main" ]
+    paths:
+      - 'evaluation-service/**'
+      - '.github/workflows/evaluation-ci.yaml'
 jobs:
   build-test:
     name: Build & Unit Test
