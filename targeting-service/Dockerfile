@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-# Install system dependencies for PostgreSQL
+## Install system dependencies for PostgreSQL
 RUN apt-get update && apt-get install -y \
         libpq-dev \
         gcc \

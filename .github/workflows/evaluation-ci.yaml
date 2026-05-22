@@ -1,10 +1,15 @@
 name: CI evaluation-service
-
+# add comment
 on:
   push:
     branches: [ "main" ]
     paths:
       - 'evaluation-service/**'
+  workflow_dispatch:
+    branches: [ "main" ]
+    paths:
+      - 'evaluation-service/**'
+      - '.github/workflows/evaluation-ci.yaml'
 jobs:
   build-test:
     name: Build & Unit Test
@@ -19,7 +24,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.26'
+          go-version: '1.22'
 
       - name: Build Go Application
         run: go build -v ./...
@@ -44,7 +49,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.26'
+          go-version: '1.22'
 
       - name: Analysing the code with golangci-lint
         uses: golangci/golangci-lint-action@v6
