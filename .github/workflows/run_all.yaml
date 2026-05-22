@@ -9,72 +9,32 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Trigger auth-service-pipeline
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'auth-service-pipeline.yaml',
-              ref: context.ref
-            })
+        uses: .github\workflows\auth-service-pipeline.yaml
 
   trigger-analytics-service:
     name: Trigger analytics-service Pipeline
     runs-on: self-hosted
     steps:
       - name: Trigger CIanalytics-service
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'CIanalytics-service.yaml',
-              ref: context.ref
-            })
+        uses: .github\workflows\CIanalytics-service.yaml
 
   trigger-evaluation-service:
     name: Trigger evaluation-service Pipeline
     runs-on: self-hosted
     steps:
       - name: Trigger evaluation-ci
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'evaluation-ci.yaml',
-              ref: context.ref
-            })
+        uses: .github\workflows\evaluation-ci.yaml
 
   trigger-flag-service:
     name: Trigger flag-service Pipeline
     runs-on: self-hosted
     steps:
       - name: Trigger flagserviceCI
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'flagserviceCI.yaml',
-              ref: context.ref
-            })
+        uses: .github\workflows\flagserviceCI.yaml
 
   trigger-targeting-service:
     name: Trigger targeting-service Pipeline
     runs-on: self-hosted
     steps:
       - name: Trigger targetingserviceCI
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'targetingserviceCI.yaml',
-              ref: context.ref
-            })
+        uses: .github\workflows\targetingserviceCI.yaml
