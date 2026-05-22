@@ -67,7 +67,7 @@ jobs:
             --from-literal=db_user=${{ secrets.db_user }} \
             --dry-run=client -o yaml | kubectl apply -f -
   
-  Inserindo os dados no banco:
+  Inserindo-os-dados-no-banco:
     runs-on: self-hosted
     needs: terraform
     steps:
