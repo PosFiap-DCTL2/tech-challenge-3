@@ -93,7 +93,14 @@ jobs:
           cache-dependency-path: auth-service/go.sum
 
       - name: Check formatting with gofmt
-        run: test -z "$(gofmt -l .)"
+        shell: powershell
+        run: |
+          $files = gofmt -l .
+          if ($files) {
+            Write-Host "Arquivos não formatados:"
+            Write-Host $files
+            exit 1
+          }
 
       - name: Run go vet
         run: go vet ./...
