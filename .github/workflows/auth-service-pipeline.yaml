@@ -33,17 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if Go exists
-        run: |
-          if command -v go >/dev/null 2>&1; then
-            echo "GO_EXISTS=true" >> $GITHUB_ENV
-            go version
-          else
-            echo "GO_EXISTS=false" >> $GITHUB_ENV
-          fi
-
       - name: Setup Go
-        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -72,17 +62,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if Go exists
-        run: |
-          if command -v go >/dev/null 2>&1; then
-            echo "GO_EXISTS=true" >> $GITHUB_ENV
-            go version
-          else
-            echo "GO_EXISTS=false" >> $GITHUB_ENV
-          fi
-
       - name: Setup Go
-        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -127,17 +107,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if Go exists
-        run: |
-          if command -v go >/dev/null 2>&1; then
-            echo "GO_EXISTS=true" >> $GITHUB_ENV
-            go version
-          else
-            echo "GO_EXISTS=false" >> $GITHUB_ENV
-          fi
-
       - name: Setup Go
-        if: env.GO_EXISTS == 'false'
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
@@ -150,8 +120,7 @@ jobs:
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
       - name: Run gosec
-        run: |
-          gosec ./...
+        run: gosec ./...
 
   build-push-docker-image:
     name: Build & Push Docker Image
