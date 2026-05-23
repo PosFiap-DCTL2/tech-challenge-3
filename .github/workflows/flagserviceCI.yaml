@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./flag-service
@@ -36,7 +36,7 @@ jobs:
           pytest || echo "Sem testes configurados, seguindo."
 
   lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./flag-service
@@ -66,7 +66,7 @@ jobs:
 
   publish-image:
     needs: [build, lint, check-security]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     defaults:
