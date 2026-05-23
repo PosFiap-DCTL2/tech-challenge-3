@@ -1,5 +1,4 @@
 name: CI auth-service
-### add comment
 
 on:
   workflow_dispatch:
@@ -35,14 +34,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check if Go exists
-        shell: powershell
         run: |
-          if (Get-Command go -ErrorAction SilentlyContinue) {
-            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+          if command -v go >/dev/null 2>&1; then
+            echo "GO_EXISTS=true" >> $GITHUB_ENV
             go version
-          } else {
-            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
-          }
+          else
+            echo "GO_EXISTS=false" >> $GITHUB_ENV
+          fi
 
       - name: Setup Go
         if: env.GO_EXISTS == 'false'
@@ -75,14 +73,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check if Go exists
-        shell: powershell
         run: |
-          if (Get-Command go -ErrorAction SilentlyContinue) {
-            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+          if command -v go >/dev/null 2>&1; then
+            echo "GO_EXISTS=true" >> $GITHUB_ENV
             go version
-          } else {
-            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
-          }
+          else
+            echo "GO_EXISTS=false" >> $GITHUB_ENV
+          fi
 
       - name: Setup Go
         if: env.GO_EXISTS == 'false'
@@ -131,14 +128,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check if Go exists
-        shell: powershell
         run: |
-          if (Get-Command go -ErrorAction SilentlyContinue) {
-            echo "GO_EXISTS=true" >> $env:GITHUB_ENV
+          if command -v go >/dev/null 2>&1; then
+            echo "GO_EXISTS=true" >> $GITHUB_ENV
             go version
-          } else {
-            echo "GO_EXISTS=false" >> $env:GITHUB_ENV
-          }
+          else
+            echo "GO_EXISTS=false" >> $GITHUB_ENV
+          fi
 
       - name: Setup Go
         if: env.GO_EXISTS == 'false'
@@ -215,5 +211,5 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
-          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH" || echo "Nenhuma alteração para commit"
+          git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH"
           git push
