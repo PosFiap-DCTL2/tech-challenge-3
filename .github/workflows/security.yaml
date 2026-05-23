@@ -8,7 +8,7 @@ on:
 jobs:
 
   SAST:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./targeting-service
@@ -25,7 +25,7 @@ jobs:
           /home/douglas/.local/bin/bandit -r . --severity-level high
 
   Trivy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./targeting-service

@@ -7,17 +7,15 @@ on:
     branches: [ "main" ]
     paths:
       - 'targeting-service/**'
-      - '.github/workflows/targetingserviceCI.yaml'
   workflow_dispatch:
     branches: [ "main" ]
     paths:
       - 'targeting-service/**'
-      - '.github/workflows/targetingserviceCI.yaml'
 
 jobs:
 
   build: 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -43,7 +41,7 @@ jobs:
           # To do: add real tests here
 
   lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -72,7 +70,7 @@ jobs:
 
   publish-image:
     needs: [build, lint, check-security]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:

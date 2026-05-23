@@ -5,13 +5,13 @@ on:
     branches: [ "main" ]
     paths:
       - 'flag-service/**'
-      - '.github/workflows/flagserviceCI.yaml' # AGORA ELE VAI RODAR QUANDO VOCÊ EDITAR O YAML!
+
   workflow_dispatch:
 
 jobs:
 
   build: 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
           pytest || echo "Sem testes configurados, seguindo."
 
   lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -67,7 +67,7 @@ jobs:
 
   publish-image:
     needs: [build, lint, check-security]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     defaults:
       run:
