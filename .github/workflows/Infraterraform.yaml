@@ -19,6 +19,9 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
+      - name: Instalar unzip
+        run: sudo apt-get update && sudo apt-get install -y unzip
+        
       - name: Initialize Terraform
         uses: hashicorp/setup-terraform@v2
 
