@@ -6,7 +6,7 @@ FROM golang:1.26-alpine AS builder
 ### Definir diretório de trabalho
 WORKDIR /app
 
-### Copiar todos os arquivos do projeto
+#### Copiar todos os arquivos do projeto
 COPY . .
 
 # Baixar dependências e compilar o binário estático (CGO_ENABLED=0 é vital para o Alpine)
