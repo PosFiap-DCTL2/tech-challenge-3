@@ -2,17 +2,16 @@ name: flag-service CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
-      - 'flag-service/**'
-
+      - "flag-service/**"
+      - ".github/workflows/flagserviceCI.yaml"
+      - ".github/workflows/security.yaml"
   workflow_dispatch:
 
 jobs:
-
-  build: 
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./flag-service
@@ -24,21 +23,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
-          pip install -r requirements.txt
+          python -m pip install pytest
+          python -m pip install -r requirements.txt
 
       - name: Run tests
         run: |
           pytest || echo "Sem testes configurados, seguindo."
 
   lint:
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./flag-service
@@ -50,31 +48,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install flake8
         run: |
           python -m pip install --upgrade pip
-          pip install flake8
-      
+          python -m pip install flake8
+
       - name: Run flake8
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-  # A MÁGICA: Chamando a esteira de segurança oficial da equipe!
   check-security:
     uses: ./.github/workflows/security.yaml
+    with:
+      working-directory: ./flag-service
 
   publish-image:
     needs: [build, lint, check-security]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main'
 
     defaults:
       run:
         working-directory: ./flag-service
 
-    # Só faz deploy se for um push direto na branch main
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -94,7 +92,7 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-      
+
       - name: Docker build
         run: |
           echo "Deploying application..."
@@ -108,6 +106,7 @@ jobs:
 
       - name: Update GitOps Repo
         run: |
+          cd ..
           git clone https://${{ secrets.GITOPS_PAT }}@github.com/PosFiap-DCTL2/tech-challenge-3
           cd tech-challenge-3/Kubernetes/flag-service
 
@@ -119,5 +118,5 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add deployment.yaml
-          git commit -m "feat(flag-service): Update da imagem para $COMMIT_HASH"
+          git commit -m "feat(flag-service): Update da imagem para $COMMIT_HASH" || echo "Nada para commitar"
           git push
