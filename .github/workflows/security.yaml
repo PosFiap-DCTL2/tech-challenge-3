@@ -22,7 +22,7 @@ jobs:
 
       - name: Run bandit
         run: |
-          /home/douglas/.local/bin/bandit -r . --severity-level high
+          bandit -r . --severity-level high
 
   Trivy:
     runs-on: ubuntu-latest
