@@ -145,10 +145,13 @@ jobs:
           cache-dependency-path: auth-service/go.sum
 
       - name: Install gosec
-        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
 
       - name: Run gosec
-        run: gosec ./...
+        run: |
+          gosec ./...
 
   build-push-docker-image:
     name: Build & Push Docker Image
