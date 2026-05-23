@@ -1,9 +1,20 @@
-# Workflow for security checks
-# add comment
-name: targeting-service security-checks
+# Reusable Workflow for security checks
+# Este workflow é chamado por diferentes serviços
+name: security-checks
 on:
   workflow_dispatch:
+    inputs:
+      service-name:
+        description: 'Nome do serviço/pasta'
+        required: false
+        default: 'targeting-service'
   workflow_call:
+    inputs:
+      service-name:
+        description: 'Nome do serviço/pasta'
+        required: false
+        type: string
+        default: 'targeting-service'
 
 jobs:
 
@@ -11,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./targeting-service
+        working-directory: ./${{ inputs.service-name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./targeting-service
+        working-directory: ./${{ inputs.service-name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
