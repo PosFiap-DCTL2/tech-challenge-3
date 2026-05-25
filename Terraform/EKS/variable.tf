@@ -7,7 +7,7 @@ variable "instance_types" {
 variable "lab_role_arn" {
   description = "ARN of the AWS Academy LabRole"
   type        = string
-  default     = "arn:aws:iam::123945314948:role/LabRole"
+  default     = "arn:aws:iam::478079197359:role/LabRole"
 }
 
 variable "subnets" {
