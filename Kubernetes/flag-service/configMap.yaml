@@ -7,4 +7,4 @@ metadata:
     app: flag-service
 data:
   AUTH_SERVICE_URL: "http://auth-service-clusterip.auth-service.svc.cluster.local:8001"
-  DATABASE_URL: "postgres://dbadmin:2AIVLq4imD8C@flagsdb.cvwomoowc2qc.us-east-1.rds.amazonaws.com:5432/flagsdb"
+  DATABASE_URL: "postgres://dbadmin:2AIVLq4imD8C@flagsdb.ccx7tsofjdzt.us-east-1.rds.amazonaws.com:5432/flagsdb"

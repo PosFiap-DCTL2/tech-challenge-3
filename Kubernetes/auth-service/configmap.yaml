@@ -6,4 +6,4 @@ metadata:
   labels:
     app: auth-service
 data:
-  DATABASE_URL: "postgres://dbadmin:5g4AqY21XSuAr7@authdb.cvwomoowc2qc.us-east-1.rds.amazonaws.com:5432/authdb"
+  DATABASE_URL: "postgres://dbadmin:5g4AqY21XSuAr7@authdb.ccx7tsofjdzt.us-east-1.rds.amazonaws.com:5432/authdb"
