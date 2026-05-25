@@ -10,7 +10,7 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
 
-## Configura o logging
+# Configura o logging
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
