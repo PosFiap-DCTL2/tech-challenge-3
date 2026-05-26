@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init-job
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 120   # auto-deleta após 2 min
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-init
+          image: postgres:15-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo ">>> authdb" && \
+              PGPASSWORD=\$AUTH_PASS psql -h \$AUTH_HOST -p 5432 -U \$DB_USER -d authdb -f /scripts/authdb.sql && \
+              echo ">>> flagsdb" && \
+              PGPASSWORD=\$FLAGS_PASS psql -h \$FLAGS_HOST -p 5432 -U \$DB_USER -d flagsdb -f /scripts/flagsdb.sql && \
+              echo ">>> targetingdb" && \
+              PGPASSWORD=\$TARGETING_PASS psql -h \$TARGETING_HOST -p 5432 -U \$DB_USER -d targetingdb -f /scripts/targetingdb.sql
+          env:
+            - name: AUTH_HOST
+              value: "$AUTH_HOST"
+            - name: FLAGS_HOST
+              value: "$FLAGS_HOST"
+            - name: TARGETING_HOST
+              value: "$TARGETING_HOST"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: db_user
+            - name: AUTH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: auth_db_password
+            - name: FLAGS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: flags_db_password
+            - name: TARGETING_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: targeting_db_password
+          volumeMounts:
+            - name: sql-scripts
+              mountPath: /scripts
+      volumes:
+        - name: sql-scripts
+          configMap:
+            name: init-sql-scripts
