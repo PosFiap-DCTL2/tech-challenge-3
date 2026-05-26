@@ -183,3 +183,5 @@ jobs:
           git add deployment.yaml
           git commit -m "feat(auth-service): Update da imagem para $COMMIT_HASH"
           git push
+
+          // atualizando servico para demo
