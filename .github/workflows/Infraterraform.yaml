@@ -38,7 +38,7 @@ jobs:
         working-directory: ./Terraform
         run: terraform apply -auto-approve
 
-      - name: Configurar acesso kubectl no EKS
+      - name: Adicionar cluster EKS ao kubeconfig
         run: |
           aws eks update-kubeconfig --name clusterpos --region us-east-1
 
@@ -83,7 +83,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: Configurar kubectl
+      - name: Adicionar cluster EKS ao kubeconfig
         run: aws eks update-kubeconfig --name clusterpos --region us-east-1
 
       - name: Coletar hosts dos RDS
