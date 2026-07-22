@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: analytics-service
-        image: 478079197359.dkr.ecr.us-east-1.amazonaws.com/analytics-service:0816ddc
+        image: 432698115448.dkr.ecr.us-east-1.amazonaws.com/analytics-service:b123117
         ports:
         - containerPort: 8005 # <- apenas indica na documentação
         envFrom:
