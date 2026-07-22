@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: flag-service
-        image: 432698115448.dkr.ecr.us-east-1.amazonaws.com/flag-service:4025ca7
+        image: 432698115448.dkr.ecr.us-east-1.amazonaws.com/flag-service:66d09d5
         ports:
         - containerPort: 8002 # <- apenas indica na documentação
         envFrom:
