@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: 478079197359.dkr.ecr.us-east-1.amazonaws.com/auth-service:a680ace
+        image: 432698115448.dkr.ecr.us-east-1.amazonaws.com/auth-service:3e511f4
         ports:
         - containerPort: 8001 # <- apenas indica na documentação
         envFrom:
